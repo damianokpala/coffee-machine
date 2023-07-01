@@ -28,10 +28,37 @@ resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
-    "money": 0.00,
 }
 
-def menu_check(x, amt_total):
+
+# Print Report
+def report():
+  for x in resources:
+     print(f"{x} : {resources[x]}")
+
+# Check Resources Sufficient
+def resources_suf(user_choice):
+  for x in MENU[user_choice]["ingredients"]:
+    if resources[x] < MENU[user_choice]["ingredients"][x]:
+      print(f"Sorry, you don't have enough {x}")
+      return False
+  return True
+  
+# process coin
+def process_coin():
+  print("Insert a coin, please")
+  # A penny is worth 1 cent.
+  amt = int(input("How many pennies?: ")) * 0.01
+  # A nickel is worth 5 cents.
+  amt += int(input("How many nickels?: ")) * 0.05
+  # A dime is worth 10 cents.
+  amt = int(input("How many dime?: ")) * 0.10
+  # A quarter is worth 25 cents.
+  amt += int(input("How many quarters?: ")) * 0.25
+  return amt
+
+# transaction success
+def transaction_success(x, amt_total):
   if amt_total >= MENU[x]["cost"]:
     amt_change = amt_total - MENU[x]["cost"]
     for y in MENU[x]["ingredients"]:
@@ -40,35 +67,12 @@ def menu_check(x, amt_total):
 
     print(f"Your {x} is ready ☕ \n")
     print(f"Here is ${round(amt_change, 2)} dollars in change.")
-        
-    #resources["money"] = amt_total - MENU[x]["cost"]
   else:
     print("Sorry that's not enough money. Money refunded..")
-    
-
-# Print Report
-def report():
-  for x in resources:
-     print(f"{x} : {resources[x]}")
-
-# print no report
-def not_report():
-  print("Insert a coin, please")
-  # A penny is worth 1 cent.
-  amt_penny = int(input("How many pennies?: ")) * 0.01
-  # A nickel is worth 5 cents.
-  amt_nickel = int(input("How many nickels?: ")) * 0.05
-  # A dime is worth 10 cents.
-  amt_dime = int(input("How many dime?: ")) * 0.10
-  # A quarter is worth 25 cents.
-  amt_quarter = int(input("How many quarters?: ")) * 0.25
-  amt_total = amt_penny + amt_nickel + amt_dime + amt_quarter
-  menu_check(user_choice, amt_total)
-  
-  
 
 
 
+# Make Coffeeo
 
 still_operating = True
 
@@ -77,12 +81,11 @@ while still_operating:
   
   if user_choice == "report":
     report()
+  elif user_choice == "off":
+    still_operating = False
   else:
-    not_report()
-  
+    if resources_suf(user_choice) == True:
+      amt_total = process_coin()
+      transaction_success(user_choice, amt_total)
+      
 
-# Check Resources Sufficient
-
-# Process Coins
-
-# Make Coffeeo
